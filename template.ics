@@ -1,0 +1,113 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//study.ruc.dk//NONSGML kigkonsult.se iCalcreator 2.22//
+METHOD:PUBLISH
+X-WR-CALNAME:Subject module project in Computer Science-25263
+X-WR-CALDESC:Kalender for Subject module project in Computer Science
+X-WR-TIMEZONE:Europe/Copenhagen
+X-PUBLISHED-TTL:PT1H
+BEGIN:VTIMEZONE
+TZID:Europe/Copenhagen
+X-LIC-LOCATION:Europe/Copenhagen
+BEGIN:STANDARD
+DTSTART:20211031T030000
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+RDATE:20221030T030000,20231029T030000
+TZNAME:CET
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:20220327T020000
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+RDATE:20230326T020000
+TZNAME:CEST
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:class:25263->lesson:157500@study.ruc.dk
+DTSTAMP:20220512T114943Z
+DESCRIPTION:Kalender for Subject module project in Computer Science
+        
+     \nLokation(er): NONE\, NONE
+            \n
+            \nUnderviser(e): 
+ \, \, 
+            \n
+            \nKurset er 'Subject module project in Com
+ puter Science'\, se kurset i study.ruc.dk: http://study.ruc.dk/class/view/
+ 25263
+            \n
+            \nSe kursusgangen i study.ruc.dk: http://st
+ udy.ruc.dk/lesson/view/157500
+DTSTART;TZID=Europe/Copenhagen:20220601T100000
+DTEND;TZID=Europe/Copenhagen:20220601T100000
+LOCATION:NONE\, NONE
+SUMMARY:Subject module project in Computer Science - Project hand-in (DAT)
+END:VEVENT
+BEGIN:VEVENT
+UID:class:25263->lesson:157501@study.ruc.dk
+DTSTAMP:20220512T114943Z
+DESCRIPTION:Kalender for Subject module project in Computer Science
+        
+     \nLokation(er): NONE\, NONE
+            \n
+            \nUnderviser(e): 
+ \, \, 
+            \n
+            \nKurset er 'Subject module project in Com
+ puter Science'\, se kurset i study.ruc.dk: http://study.ruc.dk/class/view/
+ 25263
+            \n
+            \nSe kursusgangen i study.ruc.dk: http://st
+ udy.ruc.dk/lesson/view/157501
+DTSTART;TZID=Europe/Copenhagen:20220613T081500
+DTEND;TZID=Europe/Copenhagen:20220630T180000
+LOCATION:NONE\, NONE
+SUMMARY:Subject module project in Computer Science - Oral examination perio
+ d (DAT)
+END:VEVENT
+BEGIN:VEVENT
+UID:class:25263->lesson:157502@study.ruc.dk
+DTSTAMP:20220512T114943Z
+DESCRIPTION:Kalender for Subject module project in Computer Science
+        
+     \nLokation(er): NONE\, NONE
+            \n
+            \nUnderviser(e): 
+ \, \, 
+            \n
+            \nKurset er 'Subject module project in Com
+ puter Science'\, se kurset i study.ruc.dk: http://study.ruc.dk/class/view/
+ 25263
+            \n
+            \nSe kursusgangen i study.ruc.dk: http://st
+ udy.ruc.dk/lesson/view/157502
+DTSTART;TZID=Europe/Copenhagen:20220801T081500
+DTEND;TZID=Europe/Copenhagen:20220831T180000
+LOCATION:NONE\, NONE
+SUMMARY:Subject module project in Computer Science - Oral reexamination per
+ iod (DAT)
+END:VEVENT
+BEGIN:VEVENT
+UID:class:25263->lesson:162228@study.ruc.dk
+DTSTAMP:20220512T114943Z
+DESCRIPTION:Kalender for Subject module project in Computer Science
+        
+     \nLokation(er): NONE\, NONE
+            \n
+            \nUnderviser(e): 
+ \, \, 
+            \n
+            \nKurset er 'Subject module project in Com
+ puter Science'\, se kurset i study.ruc.dk: http://study.ruc.dk/class/view/
+ 25263
+            \n
+            \nSe kursusgangen i study.ruc.dk: http://st
+ udy.ruc.dk/lesson/view/162228
+DTSTART;TZID=Europe/Copenhagen:20220131T090000
+DTEND;TZID=Europe/Copenhagen:20220131T153000
+LOCATION:NONE\, NONE
+SUMMARY:Tematisk studiestartsdag - Bæredygtig udvikling for alle
+END:VEVENT
+END:VCALENDAR
