@@ -13,9 +13,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var eventsJsonFilePath = "./events.json"
@@ -36,43 +38,167 @@ func removeBadCharactersIn(title string) string {
 
 func main() {
 	makeAllFeedsForConcerts()
+	makeFeedWithAllConcerts()
 	//Write data to file
 	//	writeLineInFileError := writeLineInFile("bob", file)
 	//	if writeLineInFileError != nil {
 	//		log.Fatal(writeLineInFileError)
 	//	}
+	fmt.Println("test")
+}
+
+func makeFeedWithAllConcerts() {
+	concertArray, _ := loadJSONFileData(eventsJsonFilePath)
+	file, useFileError := useFile("./all.ics")
+	defer file.Close()
+	if useFileError != nil {
+		panic(useFileError)
+	}
+
+	writeLineInFile(
+		"BEGIN:VCALENDAR\n"+
+			"VERSION:2.0\n"+
+			"PRODID:-//https://smashbangpow.dk//NONSGML v1.0//EN\n",
+		file)
+	for _, concert := range concertArray {
+		randomLetters := random6Letters()
+		concertDate, _ := time.Parse("2006-02-01 15:04:05", concert.ConcertDate)
+		// 20210610T172345Z
+		// yyyymmddThhmmssZ
+		concertDateString := concertDate.Format("20060201T150405Z")
+		const max = 59
+		const min = 0
+		randomNumber := rand.Intn(max-min) + min
+		concertDateStamp := concertDate.Add(time.Duration(int(time.Second) * randomNumber))
+		concertDateStampString := concertDateStamp.Format("20060201T150405Z")
+		writeLineInFile(
+			"BEGIN:VEVENT\n"+
+				"UID:"+concertDateStampString+"-"+randomLetters+"@smashbangpow.dk\n"+
+				"DTSTAMP:"+concertDateStampString+"\n"+
+				"DTSTART:"+concertDateString+"\n"+
+				"DTEND:"+concertDateString+"\n"+
+				"SUMMARY:"+concert.Koncert+"\n"+
+				"END:VEVENT\n",
+			file)
+	}
+	writeLineInFile(
+
+		"END:VCALENDAR",
+		file)
 }
 
 func makeAllFeedsForConcerts() {
 	// Load data from json file
 	concertArray, _ := loadJSONFileData(eventsJsonFilePath)
-	var title string
-	for _, data := range concertArray {
-		title = makeFeedForConcert(data.Koncert)
-		fmt.Println(title)
+
+	// 1) struct
+	// 2) koncert - prevent duplicates
+	// array(   KONCERT - title, date
+	//			, KONCERT 2
+	//			, KONCERT 3
+
+	makeFeedForConcert(concertArray)
+}
+
+type Concert struct {
+	title []string
+	date  []string
+}
+
+func makeFeedForConcert(concertArray ConcertArray) {
+
+	concerts := map[string]Concert{}
+	var concertTitles []string
+
+	for _, concert := range concertArray {
+		sanitizedTitle := sanitizeFileTitle(concert.Koncert)
+		_, exist := concerts[sanitizedTitle]
+		// check if duplicate exist
+		if !exist {
+			// if duplicate does not exist, then just insert concert data
+			concertTitles = append(concertTitles, sanitizedTitle)
+			concerts[sanitizedTitle] = Concert{[]string{concert.Koncert}, []string{concert.ConcertDate}}
+		} else {
+			// else append concert data to existing array data
+			var titleArray = concerts[sanitizedTitle].title
+			var dateArray = concerts[sanitizedTitle].date
+			titleArray = append(titleArray, concert.Koncert)
+			dateArray = append(dateArray, concert.ConcertDate)
+			// insert array
+			concerts[sanitizedTitle] = Concert{titleArray, dateArray}
+		}
+	}
+
+	//fmt.Println(concerts["artistNavn3"].title)
+	//fmt.Println(len(concerts["artistNavn3"].title))
+
+	// loop assign concertTitle
+	for i := 0; i < len(concertTitles); i++ {
+		sanitizedTitle := concertTitles[i]
+		// Create file and/or open file, if it does not exist
+		file, createFileError := useFile("./feeds/" + sanitizedTitle + ".ics")
+		if createFileError != nil {
+			log.Fatal(createFileError)
+		}
+		defer file.Close()
+
+		fillWithICSData(file, sanitizedTitle, concerts[sanitizedTitle].title, concerts[sanitizedTitle].date)
 	}
 
 }
-
-func makeFeedForConcert(data string) string {
-	title := sanitizeFileTitle(data)
-	// Create file and/or open file, if it does not exist
-	file, createFileError := createFile("./feeds/" + title + ".txt")
-	if createFileError != nil {
-		log.Fatal(createFileError)
+func random6Letters() string {
+	// Random6Letters
+	n := 3
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		panic(err)
 	}
-	defer file.Close()
-	fillWithICSDATA(file)
-
-	return title
+	s := fmt.Sprintf("%X", b)
+	return s
 }
-
-func fillWithICSDATA(file *os.File) {
+func fillWithICSData(file *os.File, sanitizedTitle string, title []string, date []string) {
 	// TODO:
 	// FILL WITH ICS DATA
 	// TEMPLATE!!!
-	writeLineInFile("test1", file)
-	writeLineInFile("test2", file)
+	writeLineInFile(
+		"BEGIN:VCALENDAR\n"+
+			"VERSION:2.0\n"+
+			"PRODID:-//https://smashbangpow.dk//NONSGML v1.0//EN\n",
+		file)
+
+	//for _, data := range concertArray {
+	//	makeFeedForConcert(data.Koncert)
+	//}
+	for i := 0; i < len(date); i++ {
+		randomLetters := random6Letters()
+		concertDate, _ := time.Parse("2006-02-01 15:04:05", date[i])
+		// 20210610T172345Z
+		// yyyymmddThhmmssZ
+		concertDateString := concertDate.Format("20060201T150405Z")
+		const max = 59
+		const min = 0
+		randomNumber := rand.Intn(max-min) + min
+		concertDateStamp := concertDate.Add(time.Duration(int(time.Second) * randomNumber))
+		concertDateStampString := concertDateStamp.Format("20060201T150405Z")
+		writeLineInFile(
+			"BEGIN:VEVENT\n"+
+				"UID:"+concertDateStampString+"-"+randomLetters+"@smashbangpow.dk\n"+
+				"DTSTAMP:"+concertDateStampString+"\n"+
+				"DTSTART:"+concertDateString+"\n"+
+				"DTEND:"+concertDateString+"\n"+
+				"SUMMARY:"+title[i]+"\n"+
+				"END:VEVENT\n",
+			file)
+	}
+
+	writeLineInFile(
+
+		"END:VCALENDAR",
+		file)
+
+	//writeLineInFile("BEGIN:VCALENDAR", file)
+	//writeLineInFile("VERSION:2.0", file)
+	//writeLineInFile("END:VCALENDAR", file)
 }
 
 func loadJSONFileData(fileName string) (ConcertArray, error) {
@@ -98,7 +224,7 @@ func sanitizeFileTitle(title string) string {
 	return title
 }
 
-func createFile(fileName string) (*os.File, error) {
+func useFile(fileName string) (*os.File, error) {
 	// If the file doesn't exist, create it, or truncate the file if it exists
 	file, fileError := os.OpenFile(fileName, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0644)
 	if fileError != nil {
