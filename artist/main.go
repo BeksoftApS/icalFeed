@@ -144,11 +144,10 @@ func fillWithICSData(file *os.File, sanitizedTitle string, title []string, date 
 		randomLetters := random6Letters()
 		//concertDate, _ := time.Parse("2006-02-01 15:04:05", date[i])
 		concertDate, _ := time.Parse("2 Jan 2006", date[i])
-		fmt.Println(date[i] + "->" + concertDate.String())
+
 		// 20210610T172345Z
 		// yyyymmddThhmmssZ
 		concertDateString := concertDate.Format("20060102T150405Z")
-		fmt.Println(concertDateString)
 
 		const max = 59
 		const min = 0
