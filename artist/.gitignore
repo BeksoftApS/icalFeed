@@ -2,3 +2,4 @@
 *.ics
 contracts.json
 all.ics
+getData.sh
