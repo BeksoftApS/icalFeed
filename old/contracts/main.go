@@ -29,7 +29,7 @@ func main() {
 
 		contractsWithICSFormat := strings.Split(string(dataFile), "SUMMARY:")
 
-		newData := "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Podio//Podio API//EN\nMETHOD:REQUEST\nX-WR-CALNAME:Contracts | Agency\nX-WR-TIMEZONE:Europe/Copenhagen"
+		newData := "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//https://smashbangpow.dk//NONSGML v1.0//EN\n"
 
 		for i := 0; i < len(contractsWithICSFormat); i++ {
 			contractsWithNamePlace := strings.Split(contractsWithICSFormat[i], ",")
