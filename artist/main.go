@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -14,18 +15,15 @@ import (
 //var eventsJsonFilePath = "/var/www/icalContractFeed/contracts.json" // TODO: Server
 //var leadsJsonFilePath = "/var/www/icalContractFeed/leads.json" // TODO: Server
 //var feedPath = "/var/www/html/ical/contract/" // TODO: Server
+//var configPath = "./config.txt" // TODO: Server
 
 var contractsJsonFilePath = "./contracts.json" // Local
 var leadsJsonFilePath = "./leads.json"         // Local
-var feedPath = "./feeds/"
+var feedPath = "./feeds/"                      // Local
+var configPath = "./config.txt"
 
-type Contracts []struct {
-	Title          string `json:"title"`
-	Artist         string `json:"artist"`
-	Date           string `json:"show-date-calendar"`
-	PodioAppItemID int    `json:"podio-app-item-id"`
-	CreatedDate    string `json:"created-date"`
-}
+var podioWebHookLink string
+var domainName string
 
 type Artist struct {
 	Title          []string
@@ -33,6 +31,14 @@ type Artist struct {
 	Date           []string
 	PodioAppItemID []int
 	CreatedDate    []string
+}
+
+type Contracts []struct {
+	Title          string `json:"title"`
+	Artist         string `json:"artist"`
+	Date           string `json:"show-date-calendar"`
+	PodioAppItemID int    `json:"podio-app-item-id"`
+	CreatedDate    string `json:"created-date"`
 }
 
 type Leads []struct {
@@ -44,9 +50,25 @@ type Leads []struct {
 }
 
 func main() {
+	loadConfig()
 	contracts := getContracts()
 	leads := getLeads()
 	makeFeedsForContractsAndLeads(contracts, leads)
+}
+
+func loadConfig() {
+	configData, err := os.ReadFile(configPath) // open file
+	if err != nil {
+		panic(err)
+	}
+
+	config := strings.Split(string(configData), ";")
+	if len(config) >= 2 {
+		domainName = config[0]
+		podioWebHookLink = config[1]
+	} else {
+		panic("Configuration needs to hold: [domainName],[podioWebHookLink]")
+	}
 }
 
 // Generic function (Contracts, Leads)
@@ -173,8 +195,20 @@ func makeFeedsForContractsAndLeads(contracts Contracts, leads Leads) {
 		defer file.Close()
 
 		fillWithICSData(file, sanitizedTitle, artistContracts[sanitizedTitle].Title, artistContracts[sanitizedTitle].Date)
-	}
+		// WEBHOOK TO PODIO
+		request, err := http.NewRequest("GET", podioWebHookLink, nil)
+		if err != nil {
+			log.Print(err)
+			os.Exit(1)
+		}
 
+		query := request.URL.Query()
+		query.Add("artistName", artistContracts[sanitizedTitle].Artist[0])
+		query.Add("url", domainName+"/ical/artist/"+folderName+"/"+sanitizedTitle+".ics")
+		request.URL.RawQuery = query.Encode()
+
+		http.Get(request.URL.String())
+	}
 }
 func random6Letters() string {
 	// Random6Letters
