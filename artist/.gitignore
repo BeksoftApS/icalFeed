@@ -1,5 +1,5 @@
 *.sh
 *.ics
-contracts.json
+*.json
 all.ics
 getData.sh
