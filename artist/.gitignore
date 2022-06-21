@@ -1,5 +1,6 @@
 *.sh
 *.ics
 *.json
+config.txt
 all.ics
 getData.sh
