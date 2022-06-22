@@ -25,6 +25,8 @@ var configPath = "./config.txt"
 var podioWebHookLink string
 var domainName string
 
+// this is a comment
+
 type Artist struct {
 	Title          []string
 	Artist         []string
